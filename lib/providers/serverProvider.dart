@@ -175,11 +175,38 @@ class ServerProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    return "";
+    return encryptionText;
   }
 
-  String decrypt() {
-    return "";
+  Future<String> decrypt({message, passphrase}) async {
+    if (token == null ) {
+      throw ServerException(
+          message: "Hesap hatası", status: ServerStatus.tokenExpired);
+    }
+
+    if(!await checkToken()){
+    await login(username: _username!, password: _password!);
+    }
+    var headers = {
+    'x-access-tokens': token!,
+    'Content-Type': 'application/json'
+    };
+    var request = http.Request('GET', Uri.parse('https://sabrey.tech/decrypt'));
+    request.body = json.encode({"passphrase": passphrase, "message": message});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+    decryptionText = await response.stream.bytesToString();
+    notifyListeners();
+    } else {
+    Get.snackbar("HATA", "Şifreleme Gerçekleştirilemedi");
+    }
+
+    notifyListeners();
+
+    return decryptionText;
   }
 
   Future<bool> checkToken() async {
