@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class Background extends StatefulWidget {
+  const Background({Key? key}) : super(key: key);
+
   @override
   _MyPainterState createState() => _MyPainterState();
 }

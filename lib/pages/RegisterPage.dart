@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:readable_cryption/pages/LoginPage.dart';
+import 'package:readable_cryption/validators.dart';
 
 import '../providers/serverProvider.dart';
 import 'HomePage.dart';
@@ -16,6 +17,7 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   var usernameController = TextEditingController();
   var passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -57,35 +59,44 @@ class _RegisterFormState extends State<RegisterForm> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 16, right: 32),
-                        child: TextField(
-                          controller: usernameController,
-                          decoration: const InputDecoration(
-                            hintStyle: TextStyle(fontSize: 20),
-                            border: InputBorder.none,
-                            icon: Icon(Icons.account_circle_rounded),
-                            hintText: "Username",
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 16, right: 32),
+                          child: TextFormField(
+                            controller: usernameController,
+                            validator: usernameValidator,
+                            decoration: const InputDecoration(
+                              errorStyle: TextStyle(fontSize: 0, height: 0),
+                              hintStyle: TextStyle(fontSize: 20),
+                              border: InputBorder.none,
+                              icon: Icon(Icons.account_circle_rounded),
+                              hintText: "Username",
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 16, right: 32),
-                        child: TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            hintStyle: TextStyle(fontSize: 22),
-                            border: InputBorder.none,
-                            icon: Icon(Icons.account_circle_rounded),
-                            hintText: "********",
+                        Container(
+                          margin: const EdgeInsets.only(left: 16, right: 32),
+                          child: TextFormField(
+                            controller: passwordController,
+                            validator: passwordValidator,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            decoration: const InputDecoration(
+                              errorStyle: TextStyle(fontSize: 0, height: 0),
+                              hintStyle: TextStyle(fontSize: 22),
+                              border: InputBorder.none,
+                              icon: Icon(Icons.account_circle_rounded),
+                              hintText: "********",
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Align(
@@ -156,18 +167,22 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   signUp() async {
-    bool error= false;
-    await ServerProvider()
-        .signUp(username: usernameController.text, password: passwordController.text)
-        .catchError((e) {
 
-      Get.snackbar("Hata","e.message",backgroundColor:  Colors.pink, colorText: Colors.white);
+    if (_formKey.currentState!.validate()) {
+      bool error= false;
+      await ServerProvider()
+          .signUp(username: usernameController.text, password: passwordController.text)
+          .catchError((e) {
+
+        Get.snackbar("Hata","e.message",backgroundColor:  Colors.pink, colorText: Colors.white);
 
         error= true;
-    });
-    if(!error){
-      Get.snackbar("Üye olundu","",backgroundColor:  Colors.pink, colorText: Colors.white);
-      await ServerProvider().externalLogin();
+      });
+      if(!error){
+        Get.snackbar("Üye olundu","",backgroundColor:  Colors.pink, colorText: Colors.white);
+        await ServerProvider().externalLogin();
+      }
+
     }
 
   }

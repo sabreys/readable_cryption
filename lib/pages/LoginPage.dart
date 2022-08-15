@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:readable_cryption/pages/RegisterPage.dart';
 import 'package:readable_cryption/providers/serverProvider.dart';
+
+import '../validators.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -13,6 +17,9 @@ class _LoginFormState extends State<LoginForm> {
 
   var usernameController = TextEditingController();
   var passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,35 +61,45 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 16, right: 32),
-                        child: TextField(
-                          controller: usernameController,
-                          decoration: const InputDecoration(
-                            hintStyle: TextStyle(fontSize: 20),
-                            border: InputBorder.none,
-                            icon: Icon(Icons.account_circle_rounded),
-                            hintText: "Username",
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 16, right: 32),
+                          child: TextFormField(
+                            validator: usernameValidator,
+
+                            controller: usernameController,
+                            decoration: const InputDecoration(
+                             errorStyle: TextStyle(fontSize: 0, height: 0),
+                              hintStyle: TextStyle(fontSize: 20),
+                              border: InputBorder.none,
+                              icon: Icon(Icons.account_circle_rounded),
+                              hintText: "Username",
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 16, right: 32),
-                        child:  TextField(
-                           controller: passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            hintStyle: TextStyle(fontSize: 22),
-                            border: InputBorder.none,
-                            icon: Icon(Icons.account_circle_rounded),
-                            hintText: "********",
+                        Container(
+                          margin: const EdgeInsets.only(left: 16, right: 32),
+                          child:  TextFormField(
+                            validator: passwordValidator,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                             controller: passwordController,
+                            decoration: const InputDecoration(
+                              errorStyle: TextStyle(fontSize: 0, height: 0),
+                              hintStyle: TextStyle(fontSize: 22),
+                              border: InputBorder.none,
+                              icon: Icon(Icons.account_circle_rounded),
+                              hintText: "********",
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Align(
@@ -128,11 +145,17 @@ class _LoginFormState extends State<LoginForm> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisterForm()),
-                  );
+
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterForm()),
+                    );
+
+
+
+
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 16, top: 24),
@@ -154,8 +177,13 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   login() {
-    ServerProvider().username = usernameController.text;
-    ServerProvider().password = passwordController.text;
-    ServerProvider().externalLogin();
+    if (_formKey.currentState!.validate()) {
+      ServerProvider().username = usernameController.text;
+      ServerProvider().password = passwordController.text;
+      ServerProvider().externalLogin();
+    }
   }
+
+
+
 }

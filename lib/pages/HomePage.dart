@@ -6,28 +6,44 @@ import 'package:readable_cryption/pages/EncryptionPage.dart';
 import 'package:readable_cryption/providers/serverProvider.dart';
 import 'package:readable_cryption/styles/styles.dart';
 
-
-
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
   final tEncrypt = "Encrypt";
   final tDecrypt = "Decrypt";
-
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              HomePageCard(title: tEncrypt, navigate:()=>Get.to(EncryptionPage())),
-              HomePageCard(title: tDecrypt, navigate:()=>Get.to(DecryptionPage())),
-              const ExitButton(),
-            ],
-          ),
+        body: Stack(
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HomePageCard(
+                      title: tEncrypt,
+                      navigate: () => Get.to(const EncryptionPage())),
+                  HomePageCard(
+                      title: tDecrypt,
+                      navigate: () => Get.to(const DecryptionPage())),
+                  const ExitButton(),
+                ],
+              ),
+            ),
+            Positioned(
+              child: RotationTransition(
+                child: Image.asset(
+                  "assets/images/shield.png",
+                  height: 200,
+                ),
+                turns: const AlwaysStoppedAnimation(30 / 360),
+              ),
+              bottom: -50,
+              left: -50,
+            )
+          ],
         ),
       ),
     );
@@ -37,7 +53,7 @@ class HomePage extends StatelessWidget {
 class ExitButton extends StatelessWidget {
   final tCikis = "Çıkış Yap";
 
-   const ExitButton({
+  const ExitButton({
     Key? key,
   }) : super(key: key);
 
@@ -46,7 +62,7 @@ class ExitButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextButton(
-        child: Text(tCikis),
+        child: Text(tCikis, style: homePageExitButtonStyle),
         onPressed: () {
           ServerProvider().logOut(context);
         },
@@ -57,8 +73,9 @@ class ExitButton extends StatelessWidget {
 
 class HomePageCard extends StatelessWidget {
   final String title;
-  Function navigate ;
-   HomePageCard({
+  Function navigate;
+
+  HomePageCard({
     required this.navigate,
     required this.title,
     Key? key,
@@ -69,7 +86,7 @@ class HomePageCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () =>navigate(),
+        onTap: () => navigate(),
         child: SizedBox(
           child: Card(
               child: Center(
