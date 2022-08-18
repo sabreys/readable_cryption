@@ -174,7 +174,7 @@ class _RegisterFormState extends State<RegisterForm> {
           .signUp(username: usernameController.text, password: passwordController.text)
           .catchError((e) {
 
-        Get.snackbar("Hata","e.message",backgroundColor:  Colors.pink, colorText: Colors.white);
+        Get.snackbar("Hata",e.message,backgroundColor:  Colors.pink, colorText: Colors.white);
 
         error= true;
       });

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ServerProvider().checkCredential();
+
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
