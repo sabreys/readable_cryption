@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -19,8 +20,6 @@ class ServerProvider extends ChangeNotifier {
   String? _password;
   String encryptionText = "";
   String decryptionText = "";
-
-
 
   set username(String value) {
     _username = value;
@@ -42,6 +41,7 @@ class ServerProvider extends ChangeNotifier {
     await storage.write(key: "username", value: _username);
     await storage.write(key: "password", value: _password);
   }
+
   Future<void> deleteCredential() async {
     await storage.delete(key: "username");
     await storage.delete(key: "password");
@@ -55,57 +55,46 @@ class ServerProvider extends ChangeNotifier {
   Future<void> checkCredential() async {
     await loadCredential();
 
-    if(_username == null ||_password == null){
+    if (_username == null || _password == null) {
       Get.to(const LoginForm());
+      return;
     }
     await externalLogin();
   }
-
 
   Future<void> login(
       {required String username, required String password}) async {
     String basicAuth =
         'Basic ' + base64.encode(utf8.encode('$username:$password'));
 
-
-
     Dio dio = Dio();
-    print(basicAuth);
+
     dio.options.headers["authorization"] = basicAuth;
 
-
-
-    var response=await dio.get('https://sabrey.tech/login').catchError((error){
+    var response =
+        await dio.get('https://sabrey.tech/login').catchError((error) {
       print(error);
       if (error is DioError) {
-       if (error.response!.statusCode! >= 400 && error.response!.statusCode! <= 500) {
-        throw ServerException(
-            message: "Yanlış Çağrı", status: ServerStatus.falseTry);
-      } else {
-        throw ServerException(
-            message: "Cevap yok", status: ServerStatus.noResponse);
-      }
-
-      } else {
-
-    }
+        if (error.response!.statusCode! >= 400 &&
+            error.response!.statusCode! <= 500) {
+          throw ServerException(
+              message: "Yanlış Çağrı", status: ServerStatus.falseTry);
+        } else {
+          throw ServerException(
+              message: "Cevap yok", status: ServerStatus.noResponse);
+        }
+      } else {}
     });
-
-
-
-
 
     if (response.statusCode == 200)
       token = json.decode(response.toString())["token"];
-
-
   }
 
   Future<void> signUp(
       {required String username, required String password}) async {
-
-    var response=await Dio().post('https://sabrey.tech/register', data: {"name": username, "password": password});
-   /*
+    var response = await Dio().post('https://sabrey.tech/register',
+        data: {"name": username, "password": password});
+    /*
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -127,7 +116,8 @@ class ServerProvider extends ChangeNotifier {
       throw ServerException(
           message: "Bu kullanıcı adı kullanımda",
           status: ServerStatus.userExist);
-    } else if (response.statusCode!.floor() >= 400 && response.statusCode!.floor() <= 500) {
+    } else if (response.statusCode!.floor() >= 400 &&
+        response.statusCode!.floor() <= 500) {
       throw ServerException(
           message: "Yanlış Çağrı", status: ServerStatus.falseTry);
     } else {
@@ -157,9 +147,9 @@ class ServerProvider extends ChangeNotifier {
       return;
     }
     await login(password: _password!, username: _username!).catchError((e) {
-      if(e.runtimeType == ServerException ) {
+      if (e.runtimeType == ServerException) {
         Get.snackbar("Hata", e.message,
-          backgroundColor: Colors.pink, colorText: Colors.white);
+            backgroundColor: Colors.pink, colorText: Colors.white);
       }
       error = true;
     });
@@ -184,10 +174,10 @@ class ServerProvider extends ChangeNotifier {
 
     Dio dio = Dio();
     dio.options.headers['x-access-tokens'] = token!;
-    dio.options.headers['Content-Type'] ='application/json';
+    dio.options.headers['Content-Type'] = 'application/json';
 
-    var response =await dio.post('https://sabrey.tech/encrypt',data: {"passphrase": passphrase, "message": message});
-
+    var response = await dio.post('https://sabrey.tech/encrypt',
+        data: {"passphrase": passphrase, "message": message});
 
     if (response.statusCode! == 200) {
       encryptionText = await response.data;
@@ -211,18 +201,16 @@ class ServerProvider extends ChangeNotifier {
       await login(username: _username!, password: _password!);
     }
 
-
     Dio dio = Dio();
     dio.options.headers['x-access-tokens'] = token!;
-    dio.options.headers['Content-Type'] ='application/json';
+    dio.options.headers['Content-Type'] = 'application/json';
 
-
-    var response =await dio.post('https://sabrey.tech/decrypt',data: {"passphrase": passphrase, "message": message}).catchError((e){
+    var response = await dio.post('https://sabrey.tech/decrypt',
+        data: {"passphrase": passphrase, "message": message}).catchError((e) {
       Get.snackbar("HATA", "Şifreleme Gerçekleştirilemedi");
-      return Future.error(ServerException(message: "Decryption Hatası",status: ServerStatus.falseTry));
+      return Future.error(ServerException(
+          message: "Decryption Hatası", status: ServerStatus.falseTry));
     });
-
-
 
     if (response.statusCode == 200) {
       decryptionText = await response.data;
@@ -241,14 +229,10 @@ class ServerProvider extends ChangeNotifier {
       return false;
     }
 
-
     var dio = Dio();
     dio.options.headers["x-access-tokens"] = token!;
 
-
-
-    var response = await  dio.get('https://sabrey.tech/checktoken');
-
+    var response = await dio.get('https://sabrey.tech/checktoken');
 
     if (response.statusCode == 200) {
       bool check = await response.data == "1" ? true : false;
