@@ -6,7 +6,7 @@ This application has been developed to encrypt and decrypt your messages in a re
 
 
 # UI
-![enter image description here](https://miro.medium.com/max/722/1*jzLf0mESMwDHcIBRRcXyYw.gif)
+![enter image description here](https://github.com/sabreys/readable_cryption/blob/master/1_jzLf0mESMwDHcIBRRcXyYw.gif?raw=true)
 
 ##   Features in Development
 - AI handwriting detection.
