@@ -1,16 +1,15 @@
-# readable_cryption
+# Readable Encryption App
 
-Readable encryption app
+This application has been developed to encrypt and decrypt your messages in a readable way. You can access the server code from the link below.
 
-## Getting Started
+[![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=sabreys&repo=readable_cryption_server&show_owner=true)](https://github.com/sabreys/readable_cryption_server)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+# UI
+![enter image description here](https://miro.medium.com/max/722/1*jzLf0mESMwDHcIBRRcXyYw.gif)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+##   Features in Development
+- AI handwriting detection.
+- Save encrypted texts.
+- Finger print support.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
