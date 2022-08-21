@@ -14,12 +14,9 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-
   var usernameController = TextEditingController();
   var passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +66,11 @@ class _LoginFormState extends State<LoginForm> {
                         Container(
                           margin: const EdgeInsets.only(left: 16, right: 32),
                           child: TextFormField(
+                            key: const Key("username"),
                             validator: usernameValidator,
-
                             controller: usernameController,
                             decoration: const InputDecoration(
-                             errorStyle: TextStyle(fontSize: 0, height: 0),
+                              errorStyle: TextStyle(fontSize: 0, height: 0),
                               hintStyle: TextStyle(fontSize: 20),
                               border: InputBorder.none,
                               icon: Icon(Icons.account_circle_rounded),
@@ -83,12 +80,13 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                         Container(
                           margin: const EdgeInsets.only(left: 16, right: 32),
-                          child:  TextFormField(
+                          child: TextFormField(
+                            key: const Key("password"),
                             validator: passwordValidator,
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                             controller: passwordController,
+                            controller: passwordController,
                             decoration: const InputDecoration(
                               errorStyle: TextStyle(fontSize: 0, height: 0),
                               hintStyle: TextStyle(fontSize: 22),
@@ -105,7 +103,7 @@ class _LoginFormState extends State<LoginForm> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: ()=> login(),
+                    onTap: () => login(),
                     child: Container(
                       margin: const EdgeInsets.only(right: 15),
                       height: 80,
@@ -145,17 +143,11 @@ class _LoginFormState extends State<LoginForm> {
             children: [
               GestureDetector(
                 onTap: () {
-
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisterForm()),
-                    );
-
-
-
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterForm()),
+                  );
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 16, top: 24),
@@ -183,7 +175,4 @@ class _LoginFormState extends State<LoginForm> {
       ServerProvider().externalLogin();
     }
   }
-
-
-
 }

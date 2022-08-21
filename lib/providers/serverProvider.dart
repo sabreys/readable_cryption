@@ -68,7 +68,6 @@ class ServerProvider extends ChangeNotifier {
         'Basic ' + base64.encode(utf8.encode('$username:$password'));
 
     Dio dio = Dio();
-
     dio.options.headers["authorization"] = basicAuth;
 
     var response =
